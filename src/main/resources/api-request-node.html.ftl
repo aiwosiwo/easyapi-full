@@ -74,10 +74,6 @@
     </div>
     <#if requestNode.androidCodePath??>
         <div class="form-group fun-btn-wrap">
-            <div class="phone-btn-wrap">
-                <a type="button" class="btn btn-sm btn-default" href="${requestNode.androidCodePath}"><i class="fa fa-android" aria-hidden="true"></i> Android Model</a>
-                <a type="button" class="btn btn-sm btn-default" href="${requestNode.iosCodePath}"><i class="fa fa-apple" aria-hidden="true"></i>iOS Model</a>
-            </div>
             <div class="debug-btn-wrap">
                 <a type="button" class="btn btn-sm btn-default" ><i class="fa fa-bug" aria-hidden="true"></i><span>debug</span></a>
             </div>

@@ -37,18 +37,6 @@ public abstract class AbsDocGenerator {
         this.initControllerNodes();
     }
 
-    public void generateDocs() {
-        LogUtils.info("doc-apis auto generate start...");
-        generateControllersDocs();
-        generateIndex(controllerNodeList);
-        // 生成静态文件 图片,js及css等
-        generateStaticFiles(IMG_PATH, LOGO_NAME);
-        generateStaticFiles(JS_PATH, JS_NAMES);
-        generateStaticFiles(CSS_PATH, CSS_NAMES);
-        generateStaticFiles(FONT_PATH, FONT_NAMES);
-        LogUtils.info("doc-apis auto generate done!");
-    }
-
     private void initControllerNodes() {
         File[] controllerFiles = com.easyapi.core.DocContext.getControllerFiles();
         for (File controllerFile : controllerFiles) {
@@ -68,6 +56,18 @@ public abstract class AbsDocGenerator {
             controllerNodeList.add(controllerNode);
             LogUtils.info("success to parse controller file : %s", controllerFile.getName());
         }
+    }
+
+    public void generateDocs() {
+        LogUtils.info("easyapi auto generate start...");
+        generateControllersDocs();
+        generateIndex(controllerNodeList);
+        // 生成静态文件 图片,js及css等
+        generateStaticFiles(IMG_PATH, LOGO_NAME);
+        generateStaticFiles(JS_PATH, JS_NAMES);
+        generateStaticFiles(CSS_PATH, CSS_NAMES);
+        generateStaticFiles(FONT_PATH, FONT_NAMES);
+        LogUtils.info("easyapi auto generate done!");
     }
 
     private void generateControllersDocs() {
