@@ -6,5 +6,5 @@ package com.easyapi.core.enums;
  * licence Apache 2.0, from japidoc
  **/
 public enum ProjectType {
-    SPRING, PLAY, JFINAL, GENERIC;
+    SPRING, PLAY, JFINAL, GENERIC
 }
