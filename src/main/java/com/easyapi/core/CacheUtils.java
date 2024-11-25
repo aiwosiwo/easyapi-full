@@ -20,34 +20,6 @@ import static com.easyapi.core.constant.CoreConstants.CACHE_FILE;
  **/
 public class CacheUtils {
 
-    public static void saveControllerNodes(List<com.easyapi.core.parser.ControllerNode> controllerNodes) {
-        try {
-            controllerNodes.forEach(controllerNode -> {
-                controllerNode.getRequestNodes().forEach(requestNode -> {
-                    requestNode.setControllerNode(null);
-                    requestNode.setLastRequestNode(null);
-                    ResponseNode responseNode = requestNode.getResponseNode();
-                    responseNode.setRequestNode(null);
-                    removeLoopNode(responseNode);
-                });
-            });
-            com.easyapi.core.Utils.writeToDisk(new File(com.easyapi.core.DocContext.getDocPath(), CACHE_FILE), com.easyapi.core.Utils.toJson(controllerNodes));
-        } catch (Exception ex) {
-            com.easyapi.core.LogUtils.error("saveControllerNodes error!!!", ex);
-        }
-    }
-
-    private static void removeLoopNode(ClassNode classNode) {
-        classNode.setParentNode(null);
-        classNode.setGenericNodes(null);
-        classNode.getChildNodes().forEach(fieldNode -> {
-            fieldNode.setClassNode(null);
-            if (fieldNode.getChildNode() != null) {
-                removeLoopNode(fieldNode.getChildNode());
-            }
-        });
-    }
-
     public static List<com.easyapi.core.parser.ControllerNode> getControllerNodes(String apiVersion) {
         File apiRootPath = new File(new File(DocContext.getDocPath()).getParentFile(), apiVersion);
         if (!apiRootPath.exists()) {
@@ -65,4 +37,34 @@ public class CacheUtils {
             return null;
         }
     }
+
+    public static void saveControllerNodes(List<com.easyapi.core.parser.ControllerNode> controllerNodes) {
+        try {
+            controllerNodes.forEach(controllerNode -> {
+                controllerNode.getRequestNodes().forEach(requestNode -> {
+                    requestNode.setControllerNode(null);
+                    requestNode.setLastRequestNode(null);
+                    ResponseNode responseNode = requestNode.getResponseNode();
+                    responseNode.setRequestNode(null);
+                    removeLoopNode(responseNode);
+                });
+            });
+            com.easyapi.core.Utils.writeToDisk(new File(com.easyapi.core.DocContext.getDocPath(), CACHE_FILE), com.easyapi.core.Utils.toJson(controllerNodes));
+        } catch (Exception ex) {
+            com.easyapi.core.LogUtils.error("Error: saveControllerNodes fail", ex);
+        }
+    }
+
+    private static void removeLoopNode(ClassNode classNode) {
+        classNode.setParentNode(null);
+        classNode.setGenericNodes(null);
+        classNode.getChildNodes().forEach(fieldNode -> {
+            fieldNode.setClassNode(null);
+            if (fieldNode.getChildNode() != null) {
+                removeLoopNode(fieldNode.getChildNode());
+            }
+        });
+    }
+
+
 }
