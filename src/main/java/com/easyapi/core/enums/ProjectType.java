@@ -1,4 +1,4 @@
-package com.easyapi.core;
+package com.easyapi.core.enums;
 
 /**
  * project type

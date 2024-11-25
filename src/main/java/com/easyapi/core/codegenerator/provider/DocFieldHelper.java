@@ -1,7 +1,7 @@
 package com.easyapi.core.codegenerator.provider;
 
 
-import com.easyapi.core.Utils;
+import com.easyapi.core.utils.Utils;
 
 /**
  * doc field helper

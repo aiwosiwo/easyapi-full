@@ -1,9 +1,9 @@
 package com.easyapi.core.doc;
 
 import com.easyapi.core.DocContext;
-import com.easyapi.core.LogUtils;
+import com.easyapi.core.utils.LogUtils;
 import com.easyapi.core.Resources;
-import com.easyapi.core.Utils;
+import com.easyapi.core.utils.Utils;
 import com.easyapi.core.codegenerator.java.JavaCodeGenerator;
 import com.easyapi.core.parser.ControllerNode;
 import com.easyapi.core.parser.RequestNode;
@@ -59,7 +59,7 @@ public class HtmlControllerDocBuilder implements IControllerDocBuilder {
         } catch (TemplateException ex) {
             ex.printStackTrace();
         } finally {
-            com.easyapi.core.Utils.closeSilently(docFileWriter);
+            Utils.closeSilently(docFileWriter);
         }
         return Utils.streamToString(new FileInputStream(docFile));
     }

@@ -1,7 +1,7 @@
 package com.easyapi.core.parser;
 
 import com.alibaba.fastjson.JSONObject;
-import com.easyapi.core.Utils;
+import com.easyapi.core.utils.Utils;
 
 /**
  * response node

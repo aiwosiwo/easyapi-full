@@ -1,8 +1,8 @@
 package com.easyapi.core.doc;
 
-import com.easyapi.core.LogUtils;
+import com.easyapi.core.utils.LogUtils;
 import com.easyapi.core.Resources;
-import com.easyapi.core.Utils;
+import com.easyapi.core.utils.Utils;
 import com.easyapi.core.parser.ControllerNode;
 import com.easyapi.core.parser.RequestNode;
 import freemarker.template.Template;

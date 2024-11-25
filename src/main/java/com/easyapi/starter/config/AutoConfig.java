@@ -2,7 +2,7 @@ package com.easyapi.starter.config;
 
 import com.easyapi.core.Docs;
 import com.easyapi.core.DocConfig;
-import com.easyapi.core.LogUtils;
+import com.easyapi.core.utils.LogUtils;
 import com.easyapi.core.plugin.markdown.MarkdownDocPlugin;
 import com.easyapi.starter.property.DocConfigProperties;
 import org.springframework.beans.factory.InitializingBean;

@@ -1,6 +1,9 @@
 package com.easyapi.core.parser;
 
-import com.easyapi.core.Utils;
+import com.easyapi.core.utils.ParseUtils;
+import com.easyapi.core.utils.Utils;
+import com.easyapi.core.annotation.DocApi;
+import com.easyapi.core.annotation.DocIgnore;
 import com.easyapi.core.constant.ChangeFlag;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
@@ -31,10 +34,10 @@ public abstract class AbsControllerParser {
     public ControllerNode parse(File javaFile) {
 
         this.javaFile = javaFile;
-        this.compilationUnit = com.easyapi.core.ParseUtils.getCompilationUnit(javaFile);
+        this.compilationUnit = ParseUtils.getCompilationUnit(javaFile);
 
         this.controllerNode = new ControllerNode();
-        String controllerName = com.easyapi.core.Utils.getJavaFileName(javaFile);
+        String controllerName = Utils.getJavaFileName(javaFile);
         controllerNode.setClassName(controllerName);
         boolean isInterface = false;
         TypeDeclaration<?> typeDeclaration = Optional.ofNullable(compilationUnit)
@@ -86,12 +89,12 @@ public abstract class AbsControllerParser {
             controllerNode.setPackageName(pd.getNameAsString());
         });
 
-        boolean generateDocs = c.getAnnotationByName(com.easyapi.core.DocApi.class.getSimpleName()).isPresent();
+        boolean generateDocs = c.getAnnotationByName(DocApi.class.getSimpleName()).isPresent();
         controllerNode.setGenerateDocs(generateDocs);
 
         c.getJavadoc().ifPresent(d -> {
             String description = d.getDescription().toText();
-            controllerNode.setDescription(com.easyapi.core.Utils.isNotEmpty(description) ? description : c.getNameAsString());
+            controllerNode.setDescription(Utils.isNotEmpty(description) ? description : c.getNameAsString());
             List<JavadocBlockTag> blockTags = d.getBlockTags();
             if (blockTags != null) {
                 for (JavadocBlockTag blockTag : blockTags) {
@@ -118,7 +121,7 @@ public abstract class AbsControllerParser {
                         return;
                     }
 
-                    boolean existsDocApi = m.getAnnotationByName(com.easyapi.core.DocApi.class.getSimpleName()).isPresent();
+                    boolean existsDocApi = m.getAnnotationByName(DocApi.class.getSimpleName()).isPresent();
                     if (!existsDocApi && !controllerNode.getGenerateDocs() && !com.easyapi.core.DocContext.getDocsConfig().getAutoGenerate()) {
                         return;
                     }
@@ -164,7 +167,7 @@ public abstract class AbsControllerParser {
                         String paraName = p.getName().asString();
                         ParamNode paramNode = requestNode.getParamNodeByName(paraName);
 
-                        if (paramNode != null && com.easyapi.core.ParseUtils.isExcludeParam(p)) {
+                        if (paramNode != null && ParseUtils.isExcludeParam(p)) {
                             requestNode.getParamNodes().remove(paramNode);
                             return;
                         }
@@ -175,7 +178,7 @@ public abstract class AbsControllerParser {
                             if (pType instanceof ArrayType) {
                                 isList = true;
                                 pType = ((ArrayType) pType).getComponentType();
-                            } else if (com.easyapi.core.ParseUtils.isCollectionType(pType.asString())) {
+                            } else if (ParseUtils.isCollectionType(pType.asString())) {
                                 List<ClassOrInterfaceType> collectionTypes = pType.getChildNodesByType(ClassOrInterfaceType.class);
                                 isList = true;
                                 if (!collectionTypes.isEmpty()) {
@@ -187,10 +190,10 @@ public abstract class AbsControllerParser {
                                 pType = p.getType();
                             }
                             if (paramNode.getType() == null) {
-                                if (com.easyapi.core.ParseUtils.isEnum(getControllerFile(), pType.asString())) {
+                                if (ParseUtils.isEnum(getControllerFile(), pType.asString())) {
                                     paramNode.setType(isList ? "enum[]" : "enum");
                                 } else {
-                                    final String pUnifyType = com.easyapi.core.ParseUtils.unifyType(pType.asString());
+                                    final String pUnifyType = ParseUtils.unifyType(pType.asString());
                                     paramNode.setType(isList ? pUnifyType + "[]" : pUnifyType);
                                 }
                             }
@@ -200,7 +203,7 @@ public abstract class AbsControllerParser {
                     Type resultClassType = null;
                     String stringResult = null;
                     if (existsDocApi) {
-                        AnnotationExpr an = m.getAnnotationByName(com.easyapi.core.DocApi.class.getSimpleName()).get();
+                        AnnotationExpr an = m.getAnnotationByName(DocApi.class.getSimpleName()).get();
                         if (an instanceof SingleMemberAnnotationExpr) {
                             resultClassType = ((ClassExpr) ((SingleMemberAnnotationExpr) an).getMemberValue()).getType();
                         } else if (an instanceof NormalAnnotationExpr) {
@@ -253,7 +256,7 @@ public abstract class AbsControllerParser {
 //        return m.getAnnotationByName(Ignore.class.getSimpleName()).isPresent();
         boolean ignore = false;
         try {
-            ignore = m.getAnnotationByClass(com.easyapi.core.DocIgnore.class).isPresent();
+            ignore = m.getAnnotationByClass(DocIgnore.class).isPresent();
         } catch (Throwable e) {
             e.printStackTrace();
         }
@@ -274,7 +277,7 @@ public abstract class AbsControllerParser {
                 rootGenericNode.setClassType(argType);
                 classNode.addGenericNode(rootGenericNode);
             }));
-            com.easyapi.core.ParseUtils.parseClassNodeByType(javaFile, classNode, classType);
+            ParseUtils.parseClassNodeByType(javaFile, classNode, classType);
         }
     }
 
@@ -310,8 +313,8 @@ public abstract class AbsControllerParser {
             }
         }
 
-        return com.easyapi.core.Utils.toJson(requestNode.getParamNodes()).equals(com.easyapi.core.Utils.toJson(lastRequestNode.getParamNodes()))
-                && com.easyapi.core.Utils.toJson(requestNode.getHeader()).equals(Utils.toJson(lastRequestNode.getHeader()))
+        return Utils.toJson(requestNode.getParamNodes()).equals(Utils.toJson(lastRequestNode.getParamNodes()))
+                && Utils.toJson(requestNode.getHeader()).equals(Utils.toJson(lastRequestNode.getHeader()))
                 && requestNode.getResponseNode().toJsonApi().equals(lastRequestNode.getResponseNode().toJsonApi());
     }
 }

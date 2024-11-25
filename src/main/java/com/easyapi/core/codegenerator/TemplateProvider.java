@@ -2,7 +2,7 @@ package com.easyapi.core.codegenerator;
 
 
 import com.easyapi.core.Resources;
-import com.easyapi.core.Utils;
+import com.easyapi.core.utils.Utils;
 
 import java.io.IOException;
 

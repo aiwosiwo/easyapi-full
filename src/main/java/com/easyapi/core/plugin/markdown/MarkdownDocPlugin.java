@@ -3,7 +3,7 @@ package com.easyapi.core.plugin.markdown;
 import com.easyapi.core.DocContext;
 import com.easyapi.core.IPluginSupport;
 import com.easyapi.core.Resources;
-import com.easyapi.core.Utils;
+import com.easyapi.core.utils.Utils;
 import com.easyapi.core.parser.ControllerNode;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;

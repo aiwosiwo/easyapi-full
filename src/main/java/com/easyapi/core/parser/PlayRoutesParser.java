@@ -1,7 +1,7 @@
 package com.easyapi.core.parser;
 
-import com.easyapi.core.LogUtils;
-import com.easyapi.core.Utils;
+import com.easyapi.core.utils.LogUtils;
+import com.easyapi.core.utils.Utils;
 import com.easyapi.core.DocContext;
 
 import java.io.BufferedReader;

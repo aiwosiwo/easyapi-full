@@ -1,5 +1,7 @@
-package com.easyapi.core;
+package com.easyapi.core.utils;
 
+import com.easyapi.core.DocContext;
+import com.easyapi.core.annotation.DocIgnore;
 import com.easyapi.core.exception.JavaFileNotFoundException;
 import com.easyapi.core.parser.ClassNode;
 import com.github.javaparser.JavaParser;
@@ -51,12 +53,12 @@ public class ParseUtils {
 
         // 解决三方pageHelper插件无法读取问题
         if (file == null && PAGE_INFO_NAME.equals(className)) {
-            file = com.easyapi.core.Utils.getThirdPartJarFile(PAGE_INFO_FILE);
+            file = Utils.getThirdPartJarFile(PAGE_INFO_FILE);
         }
 
         // easy-es分页器适配
         if (file == null && ES_PAGE_INFO_NAME.equals(className)) {
-            file = com.easyapi.core.Utils.getThirdPartJarFile(ES_PAGE_INFO_FILE);
+            file = Utils.getThirdPartJarFile(ES_PAGE_INFO_FILE);
         }
 
         // 最后的针扎,去目标地址搜索,提供可拓展性,比如有些项目可能用的是自己封装的分页插件,并且打到jar中了,需要开放此能力让这种项目开发者自行适配
@@ -179,7 +181,7 @@ public class ParseUtils {
         if (cPaths.length == 0) {
             return null;
         }
-        String javaFilePath = javaSrcPath + com.easyapi.core.Utils.joinArrayString(cPaths, "/") + ".java";
+        String javaFilePath = javaSrcPath + Utils.joinArrayString(cPaths, "/") + ".java";
         File javaFile = new File(javaFilePath);
         if (javaFile.exists() && javaFile.isFile()) {
             return javaFile;
@@ -218,7 +220,7 @@ public class ParseUtils {
             rootClassNode.setGenericNodes(null);
             List<ClassOrInterfaceType> collectionType = classType.getChildNodesByType(ClassOrInterfaceType.class);
             if (collectionType.isEmpty()) {
-                com.easyapi.core.LogUtils.warn("We found Collection without specified Class Type, Please check ! java file : %s", inJavaFile.getName());
+                LogUtils.warn("We found Collection without specified Class Type, Please check ! java file : %s", inJavaFile.getName());
                 rootClassNode.setClassName("Object");
                 return;
             } else {
@@ -319,10 +321,10 @@ public class ParseUtils {
                                     fieldNode.setClassNode(classNode);
 
                                     classNode.addChildNode(fieldNode);
-                                    fd.getComment().ifPresent(c -> fieldNode.setDescription(com.easyapi.core.Utils.cleanCommentContent(c.getContent())));
+                                    fd.getComment().ifPresent(c -> fieldNode.setDescription(Utils.cleanCommentContent(c.getContent())));
 
-                                    if (!com.easyapi.core.Utils.isNotEmpty(fieldNode.getDescription())) {
-                                        field.getComment().ifPresent(c -> fieldNode.setDescription(com.easyapi.core.Utils.cleanCommentContent(c.getContent())));
+                                    if (!Utils.isNotEmpty(fieldNode.getDescription())) {
+                                        field.getComment().ifPresent(c -> fieldNode.setDescription(Utils.cleanCommentContent(c.getContent())));
                                     }
 
                                     fd.getAnnotationByName("RapMock").ifPresent(an -> {
@@ -332,9 +334,9 @@ public class ParseUtils {
                                             for (MemberValuePair mvPair : normalAnExpr.getPairs()) {
                                                 String name = mvPair.getName().asString();
                                                 if ("limit".equalsIgnoreCase(name)) {
-                                                    mockNode.setLimit(com.easyapi.core.Utils.removeQuotations(mvPair.getValue().toString()));
+                                                    mockNode.setLimit(Utils.removeQuotations(mvPair.getValue().toString()));
                                                 } else if ("value".equalsIgnoreCase(name)) {
-                                                    mockNode.setValue(com.easyapi.core.Utils.removeQuotations(mvPair.getValue().toString()));
+                                                    mockNode.setValue(Utils.removeQuotations(mvPair.getValue().toString()));
                                                 }
                                             }
                                             fieldNode.setMockNode(mockNode);
@@ -385,7 +387,7 @@ public class ParseUtils {
                             .filter(em -> fieldClassType.endsWith(em.getNameAsString()))
                             .findFirst();
                 } catch (JavaFileNotFoundException ex) {
-                    com.easyapi.core.LogUtils.info("we think %s should not be an enum type", fieldClassType);
+                    LogUtils.info("we think %s should not be an enum type", fieldClassType);
                 }
 
                 if (ed != null && ed.isPresent()) {
@@ -429,7 +431,7 @@ public class ParseUtils {
                 isList = true;
                 List<ClassOrInterfaceType> collectionType = fieldType.getChildNodesByType(ClassOrInterfaceType.class);
                 if (collectionType.isEmpty()) {
-                    com.easyapi.core.LogUtils.warn("We found Collection without specified Class Type, Please check ! java file : %s", inJavaFile.getName());
+                    LogUtils.warn("We found Collection without specified Class Type, Please check ! java file : %s", inJavaFile.getName());
                     fieldNode.setType("Object[]");
                     return;
                 } else {
@@ -489,7 +491,7 @@ public class ParseUtils {
                     childNode.addGenericNode(childClassGenericNode);
                 }));
             } else if (fieldType instanceof com.github.javaparser.ast.type.WildcardType) {
-                com.easyapi.core.LogUtils.error("Parameter type not supporting wildcards like '?', skip generate %s", inJavaFile.toString());
+                LogUtils.error("Parameter type not supporting wildcards like '?', skip generate %s", inJavaFile.toString());
             }
 
             try {
@@ -501,7 +503,7 @@ public class ParseUtils {
                     fieldNode.setLoopNode(Boolean.TRUE);
                 }
             } catch (JavaFileNotFoundException ex) {
-                com.easyapi.core.LogUtils.warn(ex.getMessage() + ", we cannot found more information of it, you've better to make it a JavaBean");
+                LogUtils.warn(ex.getMessage() + ", we cannot found more information of it, you've better to make it a JavaBean");
                 fieldNode.setType(isList ? "Object[]" : "Object");
             }
         } else {
@@ -626,7 +628,7 @@ public class ParseUtils {
                     modelClass = Class.forName(importName);
                     break;
                 } catch (Exception e) {
-                    com.easyapi.core.LogUtils.error("ClassNotFoundException: " + className, e);
+                    LogUtils.error("ClassNotFoundException: " + className, e);
                 }
             } else if (importName.endsWith(".*")) {
                 try {

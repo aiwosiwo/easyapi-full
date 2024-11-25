@@ -1,4 +1,4 @@
-package com.easyapi.core;
+package com.easyapi.core.utils;
 
 import java.util.Locale;
 import java.util.ResourceBundle;

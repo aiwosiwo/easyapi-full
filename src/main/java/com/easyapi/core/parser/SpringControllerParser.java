@@ -1,7 +1,7 @@
 package com.easyapi.core.parser;
 
-import com.easyapi.core.ParseUtils;
-import com.easyapi.core.Utils;
+import com.easyapi.core.utils.ParseUtils;
+import com.easyapi.core.utils.Utils;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -32,7 +32,7 @@ public class SpringControllerParser extends AbsControllerParser {
         clazz.getAnnotationByName("RequestMapping").ifPresent(a -> {
             if (a instanceof SingleMemberAnnotationExpr) {
                 String baseUrl = ((SingleMemberAnnotationExpr) a).getMemberValue().toString();
-                controllerNode.setBaseUrl(com.easyapi.core.Utils.removeQuotations(baseUrl));
+                controllerNode.setBaseUrl(Utils.removeQuotations(baseUrl));
                 return;
             }
             if (a instanceof NormalAnnotationExpr) {
@@ -40,7 +40,7 @@ public class SpringControllerParser extends AbsControllerParser {
                         .filter(v -> isUrlPathKey(v.getNameAsString()))
                         .findFirst()
                         .ifPresent(p -> {
-                            controllerNode.setBaseUrl(com.easyapi.core.Utils.removeQuotations(p.getValue().toString()));
+                            controllerNode.setBaseUrl(Utils.removeQuotations(p.getValue().toString()));
                         });
             }
         });
@@ -68,7 +68,7 @@ public class SpringControllerParser extends AbsControllerParser {
         md.getAnnotations().forEach(an -> {
             String name = an.getNameAsString();
             if (Arrays.asList(MAPPING_ANNOTATIONS).contains(name)) {
-                String method = com.easyapi.core.Utils.getClassName(name).toUpperCase().replace("MAPPING", "");
+                String method = Utils.getClassName(name).toUpperCase().replace("MAPPING", "");
                 if (!"REQUEST".equals(method)) {
                     requestNode.addMethod(RequestMethod.valueOf(method).name());
                 }
@@ -77,7 +77,7 @@ public class SpringControllerParser extends AbsControllerParser {
                     ((NormalAnnotationExpr) an).getPairs().forEach(p -> {
                         String key = p.getNameAsString();
                         if (isUrlPathKey(key)) {
-                            requestNode.setUrl(com.easyapi.core.Utils.removeQuotations(p.getValue().toString()));
+                            requestNode.setUrl(Utils.removeQuotations(p.getValue().toString()));
                         }
 
                         if ("headers".equals(key)) {
@@ -99,10 +99,10 @@ public class SpringControllerParser extends AbsControllerParser {
                             if (methodAttr instanceof ArrayInitializerExpr) {
                                 NodeList<Expression> values = ((ArrayInitializerExpr) methodAttr).getValues();
                                 for (Node n : values) {
-                                    requestNode.addMethod(RequestMethod.valueOf(com.easyapi.core.Utils.getClassName(n.toString())).name());
+                                    requestNode.addMethod(RequestMethod.valueOf(Utils.getClassName(n.toString())).name());
                                 }
                             } else {
-                                requestNode.addMethod(RequestMethod.valueOf(com.easyapi.core.Utils.getClassName(p.getValue().toString())).name());
+                                requestNode.addMethod(RequestMethod.valueOf(Utils.getClassName(p.getValue().toString())).name());
                             }
                         }
                     });
@@ -110,7 +110,7 @@ public class SpringControllerParser extends AbsControllerParser {
 
                 if (an instanceof SingleMemberAnnotationExpr) {
                     String url = ((SingleMemberAnnotationExpr) an).getMemberValue().toString();
-                    requestNode.setUrl(com.easyapi.core.Utils.removeQuotations(url));
+                    requestNode.setUrl(Utils.removeQuotations(url));
                 }
 
                 requestNode.setUrl(Utils.getActionUrl(getControllerNode().getBaseUrl(), requestNode.getUrl()));
@@ -126,7 +126,7 @@ public class SpringControllerParser extends AbsControllerParser {
                     String name = an.getNameAsString();
 
                     // @NotNull, @NotBlank, @NotEmpty
-                    if (com.easyapi.core.ParseUtils.isNotNullAnnotation(name)) {
+                    if (ParseUtils.isNotNullAnnotation(name)) {
                         paramNode.setRequired(true);
                         return;
                     }
@@ -167,7 +167,7 @@ public class SpringControllerParser extends AbsControllerParser {
                 });
 
                 //如果参数是个对象
-                if (!paramNode.getJsonBody() && com.easyapi.core.ParseUtils.isModelType(paramNode.getType())) {
+                if (!paramNode.getJsonBody() && ParseUtils.isModelType(paramNode.getType())) {
                     com.easyapi.core.parser.ClassNode classNode = new com.easyapi.core.parser.ClassNode();
                     parseClassNodeByType(classNode, p.getType());
                     List<ParamNode> paramNodeList = new ArrayList<>();

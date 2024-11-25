@@ -1,8 +1,8 @@
 package com.easyapi.core.doc;
 
 
-import com.easyapi.core.LogUtils;
-import com.easyapi.core.Utils;
+import com.easyapi.core.utils.LogUtils;
+import com.easyapi.core.utils.Utils;
 import com.easyapi.core.parser.AbsControllerParser;
 import com.easyapi.core.DocContext;
 import com.easyapi.core.parser.ControllerNode;

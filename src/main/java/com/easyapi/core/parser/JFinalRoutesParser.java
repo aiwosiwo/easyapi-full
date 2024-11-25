@@ -1,9 +1,9 @@
 package com.easyapi.core.parser;
 
 import com.easyapi.core.DocContext;
-import com.easyapi.core.LogUtils;
-import com.easyapi.core.ParseUtils;
-import com.easyapi.core.Utils;
+import com.easyapi.core.utils.LogUtils;
+import com.easyapi.core.utils.ParseUtils;
+import com.easyapi.core.utils.Utils;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -34,10 +34,10 @@ public class JFinalRoutesParser {
         List<File> result = new ArrayList<>();
 
         for (String javaSrcPath : DocContext.getJavaSrcPaths()) {
-            com.easyapi.core.Utils.wideSearchFile(new File(javaSrcPath), new FilenameFilter() {
+            Utils.wideSearchFile(new File(javaSrcPath), new FilenameFilter() {
                 @Override
                 public boolean accept(File f, String name) {
-                    return com.easyapi.core.ParseUtils.getCompilationUnit(f).getChildNodesByType(ClassOrInterfaceDeclaration.class)
+                    return ParseUtils.getCompilationUnit(f).getChildNodesByType(ClassOrInterfaceDeclaration.class)
                             .stream()
                             .anyMatch(cl -> cl.getMethodsByName("configRoute")
                                     .stream()
@@ -62,7 +62,7 @@ public class JFinalRoutesParser {
 
         jfinalConfigFile = result.get(0);
 
-        com.easyapi.core.LogUtils.info("Jfinal config file path : %s", jfinalConfigFile.getAbsolutePath());
+        LogUtils.info("Jfinal config file path : %s", jfinalConfigFile.getAbsolutePath());
 
         parse(mdConfigRoute, jfinalConfigFile);
     }
@@ -78,9 +78,9 @@ public class JFinalRoutesParser {
                                 NodeList<Expression> arguments = ((MethodCallExpr) expression).getArguments();
                                 if (arguments.size() == 1 && arguments.get(0) instanceof ObjectCreationExpr) {
                                     String routeClassName = ((ObjectCreationExpr) ((MethodCallExpr) expression).getArguments().get(0)).getType().getNameAsString();
-                                    File childRouteFile = com.easyapi.core.ParseUtils.searchJavaFile(inJavaFile, routeClassName);
-                                    com.easyapi.core.LogUtils.info("found child routes in file : %s", childRouteFile.getName());
-                                    com.easyapi.core.ParseUtils.getCompilationUnit(childRouteFile)
+                                    File childRouteFile = ParseUtils.searchJavaFile(inJavaFile, routeClassName);
+                                    LogUtils.info("found child routes in file : %s", childRouteFile.getName());
+                                    ParseUtils.getCompilationUnit(childRouteFile)
                                             .getChildNodesByType(ClassOrInterfaceDeclaration.class)
                                             .stream()
                                             .filter(cd -> routeClassName.endsWith(cd.getNameAsString()))

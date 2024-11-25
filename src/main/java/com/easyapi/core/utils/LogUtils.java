@@ -1,4 +1,6 @@
-package com.easyapi.core;
+package com.easyapi.core.utils;
+
+import com.easyapi.core.DocContext;
 
 import java.io.IOException;
 import java.util.logging.FileHandler;

@@ -159,7 +159,7 @@
 
     for (let i = 0; i < 1000; i++) { // 根据需要调整数量
         const div = document.createElement('div');
-        div.textContent = 'doc-apis';
+        div.textContent = 'easyapi';
         watermarkContainer.appendChild(div);
     }
 
@@ -459,7 +459,6 @@
             curlCommand = `curl -X ${method} "${url}"`;
         }
 
-
         // 处理请求头
         curlCommand += ` -H "Content-Type: ${type}"`;
         Object.keys(headers).forEach(header => {
@@ -529,7 +528,7 @@
                 formData = JSON.parse($("#" + pID + ' .debug-textarea').val());
             } catch (e) {
                 console.log(e);
-                $("#tips").text("请检查入参格式").fadeIn().delay(3000).fadeOut();
+                $("#tips").text("check out the format of params").fadeIn().delay(3000).fadeOut();
             }
 
         } else {
@@ -565,11 +564,11 @@
 
         try {
             let successful = document.execCommand('copy');
-            let msg = successful ? '复制成功' : '复制失败';
+            let msg = successful ? 'copy success' : 'copy fail';
             $("#tips").text(msg).fadeIn().delay(3000).fadeOut();
         } catch (err) {
-            console.error('复制失败', err);
-            $("#tips").text("复制失败").fadeIn().delay(3000).fadeOut();
+            console.error('copy fail', err);
+            $("#tips").text("copy fail").fadeIn().delay(3000).fadeOut();
         }
         // 移除临时的 textarea 元素
         tempTextArea.remove();

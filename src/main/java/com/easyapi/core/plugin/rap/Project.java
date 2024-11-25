@@ -3,8 +3,8 @@ package com.easyapi.core.plugin.rap;
 
 import com.easyapi.core.DocContext;
 import com.easyapi.core.IResponseWrapper;
-import com.easyapi.core.ParseUtils;
-import com.easyapi.core.Utils;
+import com.easyapi.core.utils.ParseUtils;
+import com.easyapi.core.utils.Utils;
 import com.easyapi.core.parser.ClassNode;
 
 import java.util.*;
@@ -209,7 +209,7 @@ class Project {
         for (Map.Entry<String, Object> entry : resultMap.entrySet()) {
             Parameter parameter = Parameter.newParameter();
             parameter.setIdentifier(entry.getKey());
-            if (com.easyapi.core.Utils.isValueType(entry.getValue())) {
+            if (Utils.isValueType(entry.getValue())) {
                 String uType = unifyType(entry.getValue());
                 parameter.setDataType(com.easyapi.core.plugin.rap.DataType.rapTypeOfNode(uType));
                 parameter.setRemark(com.easyapi.core.plugin.rap.DataType.mockValue(entry.getValue()));
@@ -248,7 +248,7 @@ class Project {
 
             // cover
             if (mockNode != null) {
-                if (com.easyapi.core.Utils.isNotEmpty(mockNode.getLimit())) {
+                if (Utils.isNotEmpty(mockNode.getLimit())) {
                     parameter.setIdentifier(String.format("%s|%s", fieldNode.getName(), mockNode.getLimit()));
                 }
                 if (Utils.isNotEmpty(mockNode.getValue())) {

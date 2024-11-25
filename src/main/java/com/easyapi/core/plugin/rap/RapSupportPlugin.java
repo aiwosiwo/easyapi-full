@@ -2,11 +2,12 @@ package com.easyapi.core.plugin.rap;
 
 
 import com.easyapi.core.DocConfig;
-import com.easyapi.core.LogUtils;
+import com.easyapi.core.utils.LogUtils;
 import com.easyapi.core.http.DHttpRequest;
 import com.easyapi.core.http.DHttpUtils;
 import com.easyapi.core.http.DHttpResponse;
 import com.easyapi.core.parser.ControllerNode;
+import com.easyapi.core.utils.Utils;
 
 import java.io.IOException;
 import java.util.*;
@@ -41,7 +42,7 @@ public class RapSupportPlugin implements com.easyapi.core.IPluginSupport {
                 || docConfig == null
                 || docConfig.getRapHost() == null
                 || docConfig.getRapProjectId() == null) {
-            com.easyapi.core.LogUtils.warn("docs config properties miss, we don't think you want to post to rap!");
+            LogUtils.warn("docs config properties miss, we don't think you want to post to rap!");
             return;
         }
 
@@ -49,7 +50,7 @@ public class RapSupportPlugin implements com.easyapi.core.IPluginSupport {
         this.projectId = Integer.valueOf(docConfig.getRapProjectId());
         this.cookie = docConfig.getRapLoginCookie();
 
-        if (!com.easyapi.core.Utils.isNotEmpty(cookie)) {
+        if (!Utils.isNotEmpty(cookie)) {
             String account = docConfig.getRapAccount();
             String password = docConfig.getRapPassword();
             com.easyapi.core.http.DHttpResponse response = doLogin(loginUrl(rapHost), account, password);
@@ -72,10 +73,10 @@ public class RapSupportPlugin implements com.easyapi.core.IPluginSupport {
                 }
             }
         }
-        projectForm.setDeletedObjectListData(com.easyapi.core.Utils.toJson(deleteModuleForms));
+        projectForm.setDeletedObjectListData(Utils.toJson(deleteModuleForms));
 
         com.easyapi.core.plugin.rap.Project project = com.easyapi.core.plugin.rap.Project.valueOf(projectId, controllerNodeList);
-        projectForm.setProjectData(com.easyapi.core.Utils.toJson(project));
+        projectForm.setProjectData(Utils.toJson(project));
 
         postProject(projectForm);
     }
@@ -89,7 +90,7 @@ public class RapSupportPlugin implements com.easyapi.core.IPluginSupport {
         try {
             return DHttpUtils.httpPost(request);
         } catch (IOException ex) {
-            com.easyapi.core.LogUtils.error("login rap fail , userName : %s, pass : %s", userName, password);
+            LogUtils.error("login rap fail , userName : %s, pass : %s", userName, password);
             throw new RuntimeException(ex);
         }
     }
@@ -98,14 +99,14 @@ public class RapSupportPlugin implements com.easyapi.core.IPluginSupport {
         try {
             com.easyapi.core.http.DHttpResponse modelResp = DHttpUtils.httpGet(queryModelUrl(rapHost, projectId));
             if (modelResp.getCode() == 200) {
-                ModelResponse model = com.easyapi.core.Utils.jsonToObject(modelResp.streamAsString(), ModelResponse.class);
+                ModelResponse model = Utils.jsonToObject(modelResp.streamAsString(), ModelResponse.class);
                 return model.getModel().getModuleList();
             } else {
-                com.easyapi.core.LogUtils.error("request module data fail, rapHost : %s, projectId : %s", rapHost, projectId);
+                LogUtils.error("request module data fail, rapHost : %s, projectId : %s", rapHost, projectId);
                 throw new RuntimeException("request module data fail , code : " + modelResp.getCode());
             }
         } catch (IOException e) {
-            com.easyapi.core.LogUtils.error("get rap models fail", e);
+            LogUtils.error("get rap models fail", e);
             throw new RuntimeException(e);
         }
     }
@@ -135,9 +136,9 @@ public class RapSupportPlugin implements com.easyapi.core.IPluginSupport {
         try {
             DHttpResponse response = DHttpUtils.httpPost(request);
             if (response.getCode() == 200) {
-                com.easyapi.core.LogUtils.info("post project to rap success, response : %s ", response.streamAsString());
+                LogUtils.info("post project to rap success, response : %s ", response.streamAsString());
             } else {
-                com.easyapi.core.LogUtils.error("post project to rap fail !!! code : %s", response.streamAsString());
+                LogUtils.error("post project to rap fail !!! code : %s", response.streamAsString());
             }
         } catch (IOException e) {
             LogUtils.error("post project to rap fail", e);

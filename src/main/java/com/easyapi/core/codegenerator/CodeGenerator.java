@@ -1,7 +1,7 @@
 package com.easyapi.core.codegenerator;
 
 
-import com.easyapi.core.Utils;
+import com.easyapi.core.utils.Utils;
 import com.easyapi.core.parser.ClassNode;
 import com.easyapi.core.parser.ResponseNode;
 import com.easyapi.core.DocContext;

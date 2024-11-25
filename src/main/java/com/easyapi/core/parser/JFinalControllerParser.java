@@ -1,6 +1,6 @@
 package com.easyapi.core.parser;
 
-import com.easyapi.core.Utils;
+import com.easyapi.core.utils.Utils;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 

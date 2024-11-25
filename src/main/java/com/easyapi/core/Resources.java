@@ -68,7 +68,6 @@ public class Resources {
         return DocContext.getDocsConfig().resourcePath;
     }
 
-
     public static void setDebug() {
         isDebug = true;
         debugResourcePath = System.getProperty("user.dir") + "/build/resources/main";

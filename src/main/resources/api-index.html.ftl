@@ -20,7 +20,6 @@
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="https://www.doc-apis.com" target="_blank">Home</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">${currentApiVersion}<span class="caret"></span></a>
@@ -132,12 +131,6 @@
                     return;
                 }
             }
-            // 打开新窗口
-            window.open('https://www.doc-apis.com', '_blank');
-
-            // 记录点击时间并设置过期时间为7天
-            const expiry = now + 7 * 24 * 60 * 60 * 1000; // 7天后
-            localStorage.setItem('openDocApi', JSON.stringify({expiry: expiry}));
         });
     });
 </script>

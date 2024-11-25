@@ -1,7 +1,7 @@
 package com.easyapi.core.parser;
 
 import com.easyapi.core.DocContext;
-import com.easyapi.core.Utils;
+import com.easyapi.core.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -138,9 +138,9 @@ public class ClassNode {
             toJsonApiMap(fieldNode, jsonRootMap);
         }
         if (isList) {
-            return com.easyapi.core.Utils.toPrettyJson(new Map[]{jsonRootMap});
+            return Utils.toPrettyJson(new Map[]{jsonRootMap});
         } else {
-            return com.easyapi.core.Utils.toPrettyJson(jsonRootMap);
+            return Utils.toPrettyJson(jsonRootMap);
         }
     }
 

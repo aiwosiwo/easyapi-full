@@ -1,7 +1,11 @@
 package com.easyapi.core;
 
+import com.easyapi.core.annotation.DocApi;
+import com.easyapi.core.annotation.DocIgnore;
+import com.easyapi.core.enums.ProjectType;
 import com.easyapi.core.exception.ConfigException;
 import com.easyapi.core.parser.JFinalControllerParser;
+import com.easyapi.core.utils.*;
 import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -26,7 +30,7 @@ public class DocContext {
     private static String currentApiVersion;
     private static List<String> apiVersionList = new ArrayList<>();
     private static com.easyapi.core.parser.AbsControllerParser controllerParser;
-    private static com.easyapi.core.I18n i18n;
+    private static I18n i18n;
     private static List<File> controllerFiles;
     private static com.easyapi.core.IResponseWrapper responseWrapper;
     private static List<com.easyapi.core.parser.ControllerNode> lastVersionControllerNodes;
@@ -46,7 +50,7 @@ public class DocContext {
         }
 
         DocContext.docConfig = docConfig;
-        i18n = new com.easyapi.core.I18n(docConfig.getLocale());
+        i18n = new I18n(docConfig.getLocale());
         DocContext.currentApiVersion = docConfig.getApiVersion();
         setProjectPath(docConfig.projectPath);
         setDocPath(docConfig);
@@ -63,9 +67,9 @@ public class DocContext {
             javaSrcPaths.addAll(docConfig.getJavaSrcPaths());
         }
 
-        com.easyapi.core.LogUtils.info("find java src paths:  %s", javaSrcPaths);
+        LogUtils.info("find java src paths:  %s", javaSrcPaths);
 
-        com.easyapi.core.ProjectType projectType = findOutProjectType();
+        ProjectType projectType = findOutProjectType();
         findOutControllers(projectType);
         initLastVersionControllerNodes();
     }
@@ -100,7 +104,7 @@ public class DocContext {
 
         //module name maybe:
         //include 'auth:auth-redis'
-        List<String> moduleNames = com.easyapi.core.Utils.getModuleNames(projectDir);
+        List<String> moduleNames = Utils.getModuleNames(projectDir);
         if (!moduleNames.isEmpty()) {
             for (String moduleName : moduleNames) {
                 final String moduleRelativePath = moduleName.replace(":", "/");
@@ -124,31 +128,31 @@ public class DocContext {
         }
     }
 
-    private static com.easyapi.core.ProjectType findOutProjectType() {
+    private static ProjectType findOutProjectType() {
 
         //which mvc framework
-        com.easyapi.core.ProjectType projectType = null;
+        ProjectType projectType = null;
 
         if (docConfig.isSpringMvcProject()) {
-            projectType = com.easyapi.core.ProjectType.SPRING;
+            projectType = ProjectType.SPRING;
         } else if (docConfig.isJfinalProject()) {
-            projectType = com.easyapi.core.ProjectType.JFINAL;
+            projectType = ProjectType.JFINAL;
         } else if (docConfig.isPlayProject()) {
-            projectType = com.easyapi.core.ProjectType.PLAY;
+            projectType = ProjectType.PLAY;
         } else if (docConfig.isGeneric()) {
-            projectType = com.easyapi.core.ProjectType.GENERIC;
+            projectType = ProjectType.GENERIC;
         }
 
         if (projectType == null) {
-            com.easyapi.core.LogUtils.info("Error: project type not set");
+            LogUtils.info("Error: project type not set");
             for (String javaSrcPath : javaSrcPaths) {
                 File javaSrcDir = new File(javaSrcPath);
-                if (com.easyapi.core.Utils.isSpringFramework(javaSrcDir)) {
-                    projectType = com.easyapi.core.ProjectType.SPRING;
-                } else if (com.easyapi.core.Utils.isPlayFramework(new File(getProjectPath()))) {
-                    projectType = com.easyapi.core.ProjectType.PLAY;
-                } else if (com.easyapi.core.Utils.isJFinalFramework(javaSrcDir)) {
-                    projectType = com.easyapi.core.ProjectType.JFINAL;
+                if (Utils.isSpringFramework(javaSrcDir)) {
+                    projectType = ProjectType.SPRING;
+                } else if (Utils.isPlayFramework(new File(getProjectPath()))) {
+                    projectType = ProjectType.PLAY;
+                } else if (Utils.isJFinalFramework(javaSrcDir)) {
+                    projectType = ProjectType.JFINAL;
                 }
 
                 if (projectType != null) {
@@ -157,9 +161,9 @@ public class DocContext {
             }
         }
 
-        projectType = projectType != null ? projectType : com.easyapi.core.ProjectType.GENERIC;
+        projectType = projectType != null ? projectType : ProjectType.GENERIC;
 
-        com.easyapi.core.LogUtils.info("found it a %s project, tell us if we are wrong.", projectType);
+        LogUtils.info("found it a %s project, tell us if we are wrong.", projectType);
 
         return projectType;
     }
@@ -169,7 +173,7 @@ public class DocContext {
         Set<String> controllerFileNames;
 
         for (String javaSrcPath : getJavaSrcPaths()) {
-            com.easyapi.core.LogUtils.info("start find controllers in path : %s", javaSrcPath);
+            LogUtils.info("start find controllers in path : %s", javaSrcPath);
             File javaSrcDir = new File(javaSrcPath);
             List<File> result = new ArrayList<>();
             switch (projectType) {
@@ -202,7 +206,7 @@ public class DocContext {
                     break;
                 case SPRING:
                     controllerParser = new com.easyapi.core.parser.SpringControllerParser();
-                    com.easyapi.core.Utils.wideSearchFile(javaSrcDir, (f, name) -> f.getName().endsWith(".java") && com.easyapi.core.ParseUtils.getCompilationUnit(f)
+                    Utils.wideSearchFile(javaSrcDir, (f, name) -> f.getName().endsWith(".java") && ParseUtils.getCompilationUnit(f)
                                     .getChildNodesByType(ClassOrInterfaceDeclaration.class)
                                     .stream()
                                     .anyMatch(cd -> (cd.getAnnotationByName("Controller").isPresent()
@@ -216,7 +220,7 @@ public class DocContext {
                     break;
                 default:
                     controllerParser = new com.easyapi.core.parser.GenericControllerParser();
-                    com.easyapi.core.Utils.wideSearchFile(javaSrcDir, (f, name) -> f.getName().endsWith(".java") && com.easyapi.core.ParseUtils.getCompilationUnit(f)
+                    Utils.wideSearchFile(javaSrcDir, (f, name) -> f.getName().endsWith(".java") && ParseUtils.getCompilationUnit(f)
                             .getChildNodesByType(ClassOrInterfaceDeclaration.class)
                             .stream()
                             .anyMatch(cd ->
@@ -228,7 +232,7 @@ public class DocContext {
                     break;
             }
             for (File controllerFile : result) {
-                com.easyapi.core.LogUtils.info("find controller file : %s", controllerFile.getName());
+                LogUtils.info("find controller file : %s", controllerFile.getName());
             }
         }
     }
@@ -236,12 +240,12 @@ public class DocContext {
     private static String findModuleSrcPath(File moduleDir) {
 
         List<File> result = new ArrayList<>();
-        com.easyapi.core.Utils.wideSearchFile(moduleDir, (file, name) -> {
+        Utils.wideSearchFile(moduleDir, (file, name) -> {
             if (name.endsWith(".java") && file.getAbsolutePath().contains("src")) {
-                Optional<PackageDeclaration> opPackageDeclaration = com.easyapi.core.ParseUtils.getCompilationUnit(file).getPackageDeclaration();
+                Optional<PackageDeclaration> opPackageDeclaration = ParseUtils.getCompilationUnit(file).getPackageDeclaration();
                 if (opPackageDeclaration.isPresent()) {
                     String packageName = opPackageDeclaration.get().getNameAsString();
-                    if (com.easyapi.core.Utils.hasDirInFile(file, moduleDir, "test") && !packageName.contains("test")) {
+                    if (Utils.hasDirInFile(file, moduleDir, "test") && !packageName.contains("test")) {
                         return false;
                     } else {
                         return true;

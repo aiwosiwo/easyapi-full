@@ -1,6 +1,8 @@
-package com.easyapi.core;
+package com.easyapi.core.utils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.easyapi.core.enums.BuildToolTypeEnum;
+import com.easyapi.core.DocContext;
 import org.w3c.dom.Document;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -236,25 +238,25 @@ public class Utils {
         return parts[parts.length - 1];
     }
 
-    private static com.easyapi.core.BuildToolTypeEnum getProjectBuildTool(File projectDir) {
+    private static BuildToolTypeEnum getProjectBuildTool(File projectDir) {
         if (new File(projectDir, "settings.gradle").exists()) {
-            return com.easyapi.core.BuildToolTypeEnum.GRADLE;
+            return BuildToolTypeEnum.GRADLE;
         }
 
         if (new File(projectDir, "pom.xml").exists()) {
-            return com.easyapi.core.BuildToolTypeEnum.MAVEN;
+            return BuildToolTypeEnum.MAVEN;
         }
 
-        return com.easyapi.core.BuildToolTypeEnum.UNKNOWN;
+        return BuildToolTypeEnum.UNKNOWN;
     }
 
     public static List<String> getModuleNames(File projectDir) {
-        com.easyapi.core.BuildToolTypeEnum buildToolTypeEnum = getProjectBuildTool(projectDir);
+        BuildToolTypeEnum buildToolTypeEnum = getProjectBuildTool(projectDir);
 
         List<String> moduleNames = new ArrayList<>();
 
         //gradle
-        if (buildToolTypeEnum == com.easyapi.core.BuildToolTypeEnum.GRADLE) {
+        if (buildToolTypeEnum == BuildToolTypeEnum.GRADLE) {
             try {
                 BufferedReader settingReader = new BufferedReader(new InputStreamReader(new
                         FileInputStream(new File(projectDir, "settings.gradle"))));

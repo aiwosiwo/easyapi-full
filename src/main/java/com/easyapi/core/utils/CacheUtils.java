@@ -1,6 +1,7 @@
-package com.easyapi.core;
+package com.easyapi.core.utils;
 
 
+import com.easyapi.core.DocContext;
 import com.easyapi.core.parser.ClassNode;
 import com.easyapi.core.parser.ResponseNode;
 import com.easyapi.core.parser.ControllerNode;
@@ -30,7 +31,7 @@ public class CacheUtils {
             return null;
         }
         try {
-            com.easyapi.core.parser.ControllerNode[] controllerNodes = com.easyapi.core.Utils.jsonToObject(Utils.streamToString(new FileInputStream(cacheFile)), ControllerNode[].class);
+            com.easyapi.core.parser.ControllerNode[] controllerNodes = Utils.jsonToObject(Utils.streamToString(new FileInputStream(cacheFile)), ControllerNode[].class);
             return Arrays.asList(controllerNodes);
         } catch (IOException ex) {
             LogUtils.error("get ControllerNodes error!!!", ex);
@@ -49,9 +50,9 @@ public class CacheUtils {
                     removeLoopNode(responseNode);
                 });
             });
-            com.easyapi.core.Utils.writeToDisk(new File(com.easyapi.core.DocContext.getDocPath(), CACHE_FILE), com.easyapi.core.Utils.toJson(controllerNodes));
+            Utils.writeToDisk(new File(com.easyapi.core.DocContext.getDocPath(), CACHE_FILE), Utils.toJson(controllerNodes));
         } catch (Exception ex) {
-            com.easyapi.core.LogUtils.error("Error: saveControllerNodes fail", ex);
+            LogUtils.error("Error: saveControllerNodes fail", ex);
         }
     }
 

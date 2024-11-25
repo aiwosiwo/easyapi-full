@@ -2,6 +2,9 @@ package com.easyapi.core;
 
 import com.easyapi.core.doc.HtmlDocGenerator;
 import com.easyapi.core.plugin.rap.RapSupportPlugin;
+import com.easyapi.core.utils.CacheUtils;
+import com.easyapi.core.utils.Utils;
+
 import static com.easyapi.core.constant.CoreConstants.*;
 
 import java.io.File;
@@ -10,7 +13,7 @@ import java.io.File;
 /**
  * docs
  * <p>
- * licence Apache 2.0,AGPL-3.0, from japidoc and doc-apis originated
+ * licence Apache 2.0,AGPL-3.0, from japidoc and easyapi originated
  **/
 public class Docs {
 
@@ -26,8 +29,8 @@ public class Docs {
             e.printStackTrace();
         } finally {
             // 清理可能产生的PageInfo临时文件
-            com.easyapi.core.Utils.deleteFileWithRetry(System.getProperty(USER_DIR) + File.separator + PAGE_INFO_FILE);
-            com.easyapi.core.Utils.deleteFileWithRetry(System.getProperty(USER_DIR) + File.separator + ES_PAGE_INFO_FILE);
+            Utils.deleteFileWithRetry(System.getProperty(USER_DIR) + File.separator + PAGE_INFO_FILE);
+            Utils.deleteFileWithRetry(System.getProperty(USER_DIR) + File.separator + ES_PAGE_INFO_FILE);
         }
         //保存ControllerNode
         CacheUtils.saveControllerNodes(docGenerator.getControllerNodeList());

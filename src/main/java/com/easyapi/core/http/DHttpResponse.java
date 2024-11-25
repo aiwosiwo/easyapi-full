@@ -1,7 +1,7 @@
 package com.easyapi.core.http;
 
 
-import com.easyapi.core.Utils;
+import com.easyapi.core.utils.Utils;
 import lombok.Data;
 
 import java.io.IOException;
