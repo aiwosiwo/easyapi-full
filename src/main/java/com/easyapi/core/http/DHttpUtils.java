@@ -15,10 +15,6 @@ import java.util.Map;
  **/
 public class DHttpUtils {
 
-    private DHttpUtils() {
-
-    }
-
     public static DHttpResponse httpPost(DHttpRequest request) throws IOException {
 
         URL url = new URL(request.getUrl());
@@ -54,7 +50,6 @@ public class DHttpUtils {
             writer.write(requestParams.toString());
             writer.flush();
         }
-
 
         return toResponse(httpConn);
     }

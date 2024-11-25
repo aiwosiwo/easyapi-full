@@ -3,7 +3,6 @@ package com.easyapi.core.doc;
 import com.easyapi.core.LogUtils;
 import com.easyapi.core.Resources;
 import com.easyapi.core.Utils;
-import com.easyapi.core.DocContext;
 import com.easyapi.core.parser.ControllerNode;
 import com.easyapi.core.parser.RequestNode;
 import freemarker.template.Template;
@@ -34,7 +33,7 @@ public class HtmlDocGenerator extends AbsDocGenerator {
     void generateIndex(List<ControllerNode> controllerNodeList) {
         FileWriter docFileWriter = null;
         try {
-            LogUtils.info("doc-apis generate index start !");
+            LogUtils.info("doc-apis generate index start");
             final Template ctrlTemplate = getIndexTpl();
             final File docFile = new File(com.easyapi.core.DocContext.getDocPath(), "index.html");
             docFileWriter = new FileWriter(docFile);

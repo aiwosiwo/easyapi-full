@@ -40,7 +40,6 @@ public class Docs {
         for (IPluginSupport plugin : config.getPlugins()) {
             plugin.execute(docGenerator.getControllerNodeList());
         }
-
         // 清理 cache.json
         Utils.deleteFileWithRetry(DocContext.getDocPath() + File.separator + CACHE_FILE);
     }

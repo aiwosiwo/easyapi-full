@@ -14,7 +14,7 @@ import static com.easyapi.core.constant.CoreConstants.COMMA_SIGN;
 /**
  * doc context
  * <p>
- * licence Apache 2.0,AGPL-3.0, from japidoc and doc-apis originated
+ * licence Apache 2.0,AGPL-3.0, from japidoc.
  **/
 public class DocContext {
 
